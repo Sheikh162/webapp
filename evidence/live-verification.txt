@@ -1,0 +1,23 @@
+=== PODS/SVC/DEPLOY ===
+NAME                                 READY   STATUS        RESTARTS   AGE   IP           NODE        NOMINATED NODE   READINESS GATES
+pod/sheikh-webapp-5c6c984d6b-25rpd   1/1     Terminating   0          67s   10.42.0.23   devops-vm   <none>           <none>
+pod/sheikh-webapp-75c5cbb754-685pg   1/1     Running       0          32s   10.42.0.24   devops-vm   <none>           <none>
+
+NAME                            TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE     SELECTOR
+service/sheikh-webapp-service   NodePort   10.43.186.196   <none>        8080:30081/TCP   6m56s   app=sheikh-webapp
+
+NAME                            READY   UP-TO-DATE   AVAILABLE   AGE     CONTAINERS   IMAGES                                                              SELECTOR
+deployment.apps/sheikh-webapp   1/1     1            1           6m56s   webapp       ghcr.io/sheikh162/webapp:62a281b703b3403dec9a8a56c1c363a187ccece2   app=sheikh-webapp
+
+=== APP (redeployed) ===
+{"status":"Success","environment":"Prod","version":"62a281b703b3403dec9a8a56c1c363a187ccece2","pipeline":"github-actions","timestamp":"2026-10-29T09:10:16.535Z"}
+=== HEALTH ===
+OK
+
+=== FRIEND APP UNTOUCHED ===
+NAME                                READY   STATUS    RESTARTS        AGE
+pod/java-web-app-64ff796f8b-69gkn   1/1     Running   1 (4h48m ago)   2d15h
+
+NAME                           TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+service/java-web-app-service   NodePort    10.43.253.27   <none>        8080:30080/TCP   2d15h
+service/kubernetes             ClusterIP   10.43.0.1      <none>        443/TCP          2d17h

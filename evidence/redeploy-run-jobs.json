@@ -1,0 +1,3 @@
+{"completedAt":"2026-10-29T09:05:03Z","conclusion":"success","name":"Build and test","startedAt":"2026-10-29T09:04:51Z"}
+{"completedAt":"2026-10-29T09:05:29Z","conclusion":"success","name":"Build and push image","startedAt":"2026-10-29T09:05:05Z"}
+{"completedAt":"2026-10-29T09:06:16Z","conclusion":"success","name":"Deploy to Azure k3s","startedAt":"2026-10-29T09:05:31Z"}

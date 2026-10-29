@@ -3,12 +3,12 @@
   hosts: azure
   gather_facts: false
   vars:
-    namespace: sheikh-devops
+    k8s_namespace: sheikh-devops
     app_label: sheikh-webapp
     k8s_dir: /tmp/sheikh-webapp-k8s
   tasks:
     - name: Ensure namespace exists
-      ansible.builtin.command: kubectl create namespace {{ namespace }} --dry-run=client -o yaml | kubectl apply -f -
+      ansible.builtin.shell: kubectl create namespace {{ k8s_namespace }} --dry-run=client -o yaml | kubectl apply -f -
       changed_when: false
 
     - name: Copy K8s manifests to VM
@@ -23,11 +23,11 @@
       changed_when: "'unchanged' not in apply_out.stdout"
 
     - name: Wait for rollout
-      ansible.builtin.command: kubectl -n {{ namespace }} rollout status deploy/{{ app_label }} --timeout=120s
+      ansible.builtin.command: kubectl -n {{ k8s_namespace }} rollout status deploy/{{ app_label }} --timeout=120s
       changed_when: false
 
     - name: Show pods and service
-      ansible.builtin.command: kubectl -n {{ namespace }} get pods,svc -o wide
+      ansible.builtin.command: kubectl -n {{ k8s_namespace }} get pods,svc -o wide
       register: get_out
       changed_when: false
 

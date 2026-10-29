@@ -1,0 +1,3 @@
+completed	success	Redeploy demo: expose pipeline field in API response	CI/CD Pipeline	master	push	40846822598	1m27s	2026-10-29T09:04:49Z
+completed	success	Fix test script for Node 22 runner	CI/CD Pipeline	master	push	40846482927	1m35s	2026-10-29T09:02:09Z
+completed	failure	CIA2: Node webapp with tests, Docker, K8s manifests, Ansible, GitHub …	CI/CD Pipeline	master	push	40846316595	14s	2026-10-29T09:00:51Z
