@@ -25,6 +25,7 @@ describe('webapp', () => {
     assert.equal(body.status, 'Success');
     assert.ok(body.environment);
     assert.ok(body.version);
+    assert.equal(body.pipeline, 'github-actions');
   });
 
   it('GET /health returns OK', async () => {
