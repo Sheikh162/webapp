@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "manogar27/blue-green-node-app"
+        IMAGE_NAME = "sheikh718/blue-green-node-app"
         NETWORK = "app-network"
         NGINX_CONTAINER = "nginx-proxy"
         BLUE_CONTAINER = "app-blue"

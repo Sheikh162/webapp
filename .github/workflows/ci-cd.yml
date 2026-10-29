@@ -1,0 +1,82 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [master, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ghcr.io/sheikh162/webapp
+
+jobs:
+  build-test:
+    name: Build and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+
+  build-push:
+    name: Build and push image
+    needs: build-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/sheikh162/webapp:latest
+            ghcr.io/sheikh162/webapp:${{ github.sha }}
+
+  deploy:
+    name: Deploy to Azure k3s
+    needs: build-push
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Copy manifests to VM
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.AZURE_HOST }}
+          username: ${{ secrets.AZURE_USER }}
+          key: ${{ secrets.AZURE_SSH_KEY }}
+          source: "k8s/"
+          target: "/tmp/sheikh-webapp-k8s"
+          strip_components: 0
+          overwrite: true
+
+      - name: Apply and verify on k3s
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.AZURE_HOST }}
+          username: ${{ secrets.AZURE_USER }}
+          key: ${{ secrets.AZURE_SSH_KEY }}
+          script: |
+            set -e
+            kubectl create namespace sheikh-devops --dry-run=client -o yaml | kubectl apply -f -
+            kubectl apply -f /tmp/sheikh-webapp-k8s/k8s/
+            kubectl -n sheikh-devops set image deployment/sheikh-webapp webapp=ghcr.io/sheikh162/webapp:${{ github.sha }}
+            kubectl -n sheikh-devops set env deployment/sheikh-webapp APP_VERSION=${{ github.sha }}
+            kubectl -n sheikh-devops rollout status deploy/sheikh-webapp --timeout=180s
+            kubectl -n sheikh-devops get pods,svc -o wide
+            sleep 3
+            curl -s http://localhost:30081/ | head -c 500; echo
+            curl -s http://localhost:30081/health

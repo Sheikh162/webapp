@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sheikh-devops
+  labels:
+    app.kubernetes.io/managed-by: cicd
+    app.kubernetes.io/owner: sheikh
