@@ -1,0 +1,5 @@
+title = "webapp CIA2 secret scan"
+
+[allowlist]
+description = "evidence transcripts and docs"
+paths = ['evidence/.', '.\.md$']
