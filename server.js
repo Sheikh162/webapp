@@ -10,6 +10,7 @@ app.get('/', (req, res) => {
     environment: APP_ENV,
     version: APP_VERSION,
     pipeline: 'github-actions',
+    message: "cia2",
     timestamp: new Date()
   });
 });
