@@ -97,11 +97,11 @@ runtime. The VM had no Docker CLI, node, Java, Jenkins, Helm or Ansible; none ar
 needed on it because builds run on GitHub runners and the VM only receives
 kubectl apply over SSH.
 
-Co-tenancy: a teammate's java-web-app runs in the default namespace on NodePort
+Co-tenancy: an existing java-web-app runs in the default namespace on NodePort
 30080. All project objects live in the dedicated sheikh-devops namespace with
 unique labels (app: sheikh-webapp), one small replica (128-256 MB), and NodePort
-30081, so no object, port, or rollout can collide with the teammate's workload.
-Post-deployment checks confirmed the teammate's pod and service untouched.
+30081, so no object, port, or rollout can collide with the existing workload.
+Post-deployment checks confirmed the existing pod and service untouched.
 
 GHCR package: ghcr.io/sheikh162/webapp, tags :latest and :<sha>, public.
 
@@ -148,8 +148,8 @@ rollout, and the endpoint confirms the pinned sha.
 Secrets (AZURE_HOST, AZURE_USER, AZURE_SSH_KEY) live in GitHub Actions secrets,
 never in the repository; the SSH private key file is 600 locally and in ~/.ssh.
 GHCR authentication uses the short-lived GITHUB_TOKEN. Blast radius is bounded by
-the dedicated namespace, unique labels, and a distinct NodePort (30081; the
-teammate uses 30080). The VM accepts key-only SSH, so key custody matters.
+the dedicated namespace, unique labels, and a distinct NodePort (30081; port
+30080 is already in use). The VM accepts key-only SSH, so key custody matters.
 Outside access note: at submission time the Azure NSG does not admit inbound
 30081, so the endpoint answers inside the VM (verified by curl over SSH) and
 from any laptop via an SSH tunnel (ssh -L 8081:localhost:30081 azureuser@VM,
